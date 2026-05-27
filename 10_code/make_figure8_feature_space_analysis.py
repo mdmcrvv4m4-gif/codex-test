@@ -94,7 +94,7 @@ def merge_if_needed(df: pd.DataFrame, tables_dir: Path):
     return df
 
 
-def confidence_ellipse(ax, x, y, color, lw=1.0, alpha=0.3):
+def confidence_ellipse(ax, x, y, color, lw=0.9, alpha=0.18):
     try:
         import matplotlib.transforms as transforms
         from matplotlib.patches import Ellipse
@@ -275,14 +275,14 @@ def main():
                 break
         display_names.append(mapped if mapped else c)
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6), constrained_layout=True)
+    fig, axes = plt.subplots(1, 2, figsize=(15.2, 6.2), constrained_layout=False)
     im = axes[0].imshow(corr.values, cmap="coolwarm", vmin=-1, vmax=1, aspect="equal")
     cbar = fig.colorbar(im, ax=axes[0], fraction=0.046, pad=0.04)
     cbar.set_label("Pearson r")
     axes[0].set_xticks(np.arange(len(display_names)))
     axes[0].set_yticks(np.arange(len(display_names)))
-    axes[0].set_xticklabels(display_names, rotation=45, ha="right")
-    axes[0].set_yticklabels(display_names)
+    axes[0].set_xticklabels(display_names, rotation=60, ha="right", fontsize=9)
+    axes[0].set_yticklabels(display_names, fontsize=10)
     for i in range(corr.shape[0]):
         for j in range(corr.shape[1]):
             v = corr.values[i, j]
@@ -298,12 +298,13 @@ def main():
         ax.scatter(zdf["PC1"], zdf["PC2"], s=28, alpha=0.72, c=palette[zone], label=zone, edgecolors="none")
         cx, cy = zdf["PC1"].mean(), zdf["PC2"].mean()
         ax.scatter([cx], [cy], marker="X", s=140, c=palette[zone], edgecolors="black", linewidths=1.1)
-        confidence_ellipse(ax, zdf["PC1"].values, zdf["PC2"].values, palette[zone], lw=1.0, alpha=0.3)
+        confidence_ellipse(ax, zdf["PC1"].values, zdf["PC2"].values, palette[zone], lw=0.9, alpha=0.18)
     ax.set_xlabel(f"PC1 ({evr[0]*100:.1f}%)")
     ax.set_ylabel(f"PC2 ({evr[1]*100:.1f}%)")
     ax.set_title("(b) PCA of combined features by barrel zone", fontsize=12)
     ax.legend(title="Zone", loc="upper right", frameon=True)
 
+    fig.subplots_adjust(left=0.06, right=0.985, bottom=0.24, top=0.93, wspace=0.26)
     for ext in ["png", "tif", "pdf"]:
         fig.savefig(fig_dir / f"Figure_8_feature_space_analysis.{ext}", dpi=600, bbox_inches="tight")
     plt.close(fig)
