@@ -5,7 +5,6 @@ import warnings
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
@@ -125,7 +124,7 @@ def confidence_ellipse(ax, x, y, color):
 def main():
     plt.rcParams["font.family"] = "DejaVu Sans"
     plt.rcParams["figure.facecolor"] = "white"
-    sns.set_theme(style="white")
+    plt.style.use("default")
 
     root = resolve_project_root()
     tables_dir = root / "05_tables"
@@ -211,18 +210,21 @@ def main():
 
     fig, axes = plt.subplots(1, 2, figsize=(14, 6), constrained_layout=True)
 
-    sns.heatmap(
-        corr,
-        ax=axes[0],
-        cmap="RdBu_r",
-        vmin=-1,
-        vmax=1,
-        center=0,
-        annot=True,
-        fmt=".2f",
-        square=True,
-        cbar_kws={"shrink": 0.8, "label": "Pearson r"},
-    )
+    corr_values = corr.values
+    im = axes[0].imshow(corr_values, cmap="coolwarm", vmin=-1, vmax=1, aspect="equal")
+    cbar = fig.colorbar(im, ax=axes[0], fraction=0.046, pad=0.04)
+    cbar.set_label("Pearson r")
+    axes[0].set_xticks(np.arange(len(selected)))
+    axes[0].set_yticks(np.arange(len(selected)))
+    axes[0].set_xticklabels(selected)
+    axes[0].set_yticklabels(selected)
+    axes[0].tick_params(axis="x", rotation=45)
+
+    for i in range(corr_values.shape[0]):
+        for j in range(corr_values.shape[1]):
+            val = corr_values[i, j]
+            txt_color = "white" if abs(val) > 0.5 else "black"
+            axes[0].text(j, i, f"{val:.2f}", ha="center", va="center", color=txt_color, fontsize=8)
     axes[0].set_title("(a) Feature correlation heatmap", fontsize=12)
     axes[0].tick_params(axis="x", rotation=45)
     axes[0].tick_params(axis="y", rotation=0)
