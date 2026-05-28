@@ -40,6 +40,7 @@ def clean_feature_name(name: str) -> str:
         "crack_length_density": "Crack length density",
         "crack_network_density": "Crack network density",
         "wear_mark_density": "Wear mark density",
+        "wear_area_fraction": "Wear area fraction",
         "severe_damage_area_fraction": "Severe damage area fraction",
     }
     x = str(name).strip()
@@ -70,12 +71,6 @@ def pick_task3_s14(df, feature_col, importance_col, task_col):
         .index[0]
     )
     return df[df[task_col] == best_task].copy(), f"Fallback task: {best_task}"
-
-
-def annotate_barh(ax, bars, vals):
-    xmax = max(vals) if len(vals) else 1
-    for b, v in zip(bars, vals):
-        ax.text(b.get_width() + xmax * 0.01, b.get_y() + b.get_height()/2, f"{v:.3f}", va="center", fontsize=8)
 
 
 def main():
@@ -115,7 +110,10 @@ def main():
         "patch_id", "image_id", "zone", "region", "label", "class", "target", "severity", "failure", "mode",
         "y_true", "y_pred", "prediction", "predicted", "file", "path", "mask", "overlay", "status", "split",
         "fold", "rank", "count", "row", "col", "patch_row", "patch_col", "dsi", "score", "norm",
-        "normalized", "primary", "enhanced", "weight"
+        "normalized", "primary", "enhanced", "weight",
+        "y1", "y2", "x1", "x2", "patch no", "patch_no", "patchno", "patch_number",
+        "patch index", "patch_index", "sample_id", "sample no", "sample_no", "index", "id",
+        "coordinate", "coord", "position", "location"
     ]
 
     y = s10[y_col]
@@ -173,13 +171,7 @@ def main():
     }).sort_values("perm_importance_mean", ascending=False)
 
     perm_df_pos = perm_df[perm_df["perm_importance_mean"] > 0].copy()
-    if perm_df_pos.empty:
-        top_perm = perm_df.head(10).copy()
-        summary_lines.append(
-            "No positive permutation importance features were found; fallback used top 10 by raw mean."
-        )
-    else:
-        top_perm = perm_df_pos.head(10).copy()
+    top_perm = perm_df_pos.head(10).copy()
     top_perm["feature_display"] = top_perm["feature"].map(clean_feature_name)
     top_perm.to_excel(OUT_DIR / "Figure11_permutation_importance_top_features.xlsx", index=False)
 
@@ -188,28 +180,25 @@ def main():
 
     rf_plot = top_rf.iloc[::-1]
     ylabels_a = [wrap_label(x) for x in rf_plot["feature_display"]]
-    bars_a = axes[0].barh(ylabels_a, rf_plot[imp_col], color="#4C78A8")
+    axes[0].barh(ylabels_a, rf_plot[imp_col], color="#4C78A8")
     axes[0].set_xlabel("RF feature importance")
     axes[0].set_title("(a) RF impurity-based importance", loc="left")
-    annotate_barh(axes[0], bars_a, rf_plot[imp_col].values)
 
     pm_plot = top_perm.iloc[::-1]
     ylabels_b = [wrap_label(x) for x in pm_plot["feature_display"]]
-    bars_b = axes[1].barh(
+    axes[1].barh(
         ylabels_b,
         pm_plot["perm_importance_mean"],
-        xerr=pm_plot["perm_importance_std"],
         color="#F58518",
-        ecolor="black",
-        capsize=2,
     )
     axes[1].set_xlabel("Permutation importance decrease in Macro-F1")
     axes[1].set_title("(b) Permutation importance", loc="left")
-    annotate_barh(axes[1], bars_b, pm_plot["perm_importance_mean"].values)
 
     for ax in axes:
         ax.set_facecolor("white")
         ax.spines[["top", "right"]].set_visible(False)
+        ax.tick_params(axis="both", direction="in", length=4, width=1)
+        ax.tick_params(which="minor", direction="in")
 
     fig.tight_layout()
     main_png = OUT_DIR / "Figure_11_feature_importance_explanation.png"
@@ -241,9 +230,10 @@ def main():
         shap_msg = "SHAP was skipped because shap was not installed or failed in the current environment."
 
     summary_lines.extend([
-        "Permutation importance filtering: excluded derived/location features containing "
-        "DSI, score, norm/normalized, rank, count, row/col, patch_row/patch_col, and related metadata.",
-        "Figure 11(b) is computed only from original grayscale, texture, and semantic morphology features.",
+        "Permutation importance excluded positional, identifier, DSI, score, normalized, rank, count, row/column, and sample-index variables.",
+        "The displayed permutation importance is based only on grayscale, texture, and semantic morphology features.",
+        "Error bars were omitted from the permutation importance plot for visual clarity.",
+        "Numerical labels on bars were omitted; feature importance values are provided in the exported Excel tables.",
     ])
 
     rf_feats = [str(x) for x in top_rf[feat_col].tolist()]
