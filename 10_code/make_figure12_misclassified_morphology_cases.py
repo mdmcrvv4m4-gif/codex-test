@@ -304,13 +304,13 @@ def main():
 
     mpl.rcParams["font.family"] = "sans-serif"
     mpl.rcParams["font.sans-serif"] = ["Arial", "DejaVu Sans"]
-    fig, axes = plt.subplots(4, 3, figsize=(12, 14), facecolor="white")
-    fig.subplots_adjust(top=0.92, hspace=0.35, wspace=0.15)
-    for j, t in enumerate(["Full SEM with patch location", "SEM patch", "Semantic mask / overlay"]):
+    fig, axes = plt.subplots(4, 2, figsize=(9, 14), facecolor="white")
+    fig.subplots_adjust(top=0.93, hspace=0.42, wspace=0.12)
+    for j, t in enumerate(["Full SEM with patch location", "SEM patch"]):
         axes[0, j].set_title(t, fontsize=10)
 
     for i in range(4):
-        for j in range(3):
+        for j in range(2):
             axes[i, j].axis("off")
         if i < len(matched_df):
             c = matched_df.iloc[i].to_dict()
@@ -334,11 +334,6 @@ def main():
                 draw_or_text(axes[i, 0], None, "Full SEM not found")
 
             draw_or_text(axes[i, 1], patch, "Patch image not found", force_gray=True)
-            if c.get("mask_is_true_overlay_or_mask", False):
-                draw_or_text(axes[i, 2], mask, "Mask/overlay not found")
-            else:
-                draw_or_text(axes[i, 2], None, "Mask/overlay not found")
-                summary.append(f"{c.get('Case_label')}: No strict semantic mask/overlay was found for this case.")
 
     fig.tight_layout()
     for ext in ["png", "tif", "pdf"]:
@@ -359,6 +354,10 @@ def main():
 
     summary.append(f"Matched cases: {success}")
     summary.append(f"Missing cases: {fail}")
+    summary.append("Strict semantic mask/overlay files were not available for the selected cases.")
+    summary.append("The final Figure 12 therefore displays full SEM images and corresponding SEM patches only.")
+    summary.append("Figure 12 is used to interpret morphological reasons for misclassification rather than to validate semantic segmentation.")
+    summary.append("Semantic segmentation and mask validation are shown separately in Figure 4.")
     (out_dir / "Figure12_case_selection_summary.txt").write_text("\n".join(summary), encoding="utf-8")
 
     print("Selected 4 cases:")
