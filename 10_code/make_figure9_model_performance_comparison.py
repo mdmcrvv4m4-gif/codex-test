@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 
 TASK_ORDER = ["Task 1: Zone", "Task 2: Severity", "Task 3: Failure mode"]
+TASK_TICK_LABELS = ["Zone", "Severity", "Failure mode"]
 MODEL_ORDER = ["Logistic Regression", "SVM", "Random Forest"]
 
 
@@ -146,15 +147,16 @@ def plot_figure(perf: pd.DataFrame, out_dir: Path):
                 ax.text(b.get_x() + b.get_width() / 2, min(1.03, v + 0.015), f"{v:.2f}", ha="center", va="bottom", fontsize=8)
         ax.set_title(subtitle, fontsize=11)
         ax.set_xticks(x)
-        ax.set_xticklabels(TASK_ORDER, fontsize=9)
+        ax.set_xticklabels(TASK_TICK_LABELS, fontsize=9)
         ax.set_ylim(0, 1.05)
         ax.set_ylabel("Score")
         ax.set_ylim(0, 1.05)
         ax.grid(axis="y", linestyle="--", alpha=0.3)
 
     handles = [plt.Rectangle((0, 0), 1, 1, color=c, ec="black", lw=0.5) for c in colors]
-    fig.legend(handles, MODEL_ORDER, loc="upper center", ncol=3, frameon=False, bbox_to_anchor=(0.5, 1.03))
-    plt.tight_layout(rect=[0, 0, 1, 0.92])
+    fig.legend(handles, MODEL_ORDER, loc="upper center", bbox_to_anchor=(0.5, 1.04), ncol=3, frameon=False)
+    plt.tight_layout(rect=[0, 0, 1, 0.93])
+
     png = out_dir / "Figure_9_model_performance_comparison.png"
     tif = out_dir / "Figure_9_model_performance_comparison.tif"
     pdf = out_dir / "Figure_9_model_performance_comparison.pdf"
