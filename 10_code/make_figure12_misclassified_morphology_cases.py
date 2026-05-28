@@ -33,6 +33,8 @@ S6 = TABLE_DIR / "S6_semantic_features_Z1_Z4.xlsx"
 S7 = TABLE_DIR / "S7_feature_table_with_semantic_DSI_Z1_Z4.xlsx"
 
 IMG_EXTS = {".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp"}
+GOOD_MASK_KWS = ["overlay", "mask", "label", "annotation", "annotated", "semantic", "segmentation", "pred", "prediction"]
+BAD_MASK_PATH_KWS = ["images_for_annotation", "image_for_annotation", "raw", "original", "source"]
 FEATURE_COLS = ["crack_area_fraction", "wear_area_fraction", "severe_damage_area_fraction", "crack_length_density", "crack_network_density", "wear_mark_density", "severe_damage_connected_area"]
 TARGETS = [
     ("Task 1", "(a) True Z2, predicted Z3", "z2", "z3"),
@@ -91,7 +93,14 @@ def scan_images(root: Path) -> List[Path]:
     return [p for p in root.rglob("*") if p.is_file() and p.suffix.lower() in IMG_EXTS]
 
 
-def best_match(paths: List[Path], patch_id: str, image_id: str = "", need_overlay=False) -> Optional[Path]:
+def is_true_mask_overlay(path: Path) -> bool:
+    low = str(path).lower().replace("\\", "/")
+    if any(k in low for k in BAD_MASK_PATH_KWS):
+        return False
+    return any(k in low for k in GOOD_MASK_KWS)
+
+
+def best_match(paths: List[Path], patch_id: str, image_id: str = "", need_overlay=False, strict_triplet=False, only_true_mask=False) -> Optional[Path]:
     if not paths:
         return None
     pid = nrm_sep(patch_id)
@@ -101,8 +110,15 @@ def best_match(paths: List[Path], patch_id: str, image_id: str = "", need_overla
 
     scored = []
     for p in paths:
+        if only_true_mask and not is_true_mask_overlay(p):
+            continue
         name = p.stem
         ns = nrm_sep(name)
+        has_zone = bool(zone and zone in ns)
+        has_img = bool(img_no and re.search(rf"(?:img|image)?0*{img_no}(?!\d)", ns))
+        has_patch = bool(patch_no and re.search(rf"(?:patch|p)?0*{patch_no}(?!\d)", ns))
+        if strict_triplet and not (has_zone and has_img and has_patch):
+            continue
         score = 0
         if pid and pid in ns:
             score += 100
@@ -135,14 +151,16 @@ def find_case_images(case: Dict, sem_files, patch_files, manual_files, seg_files
     patch_id = str(case.get("Patch_ID", ""))
     image_id = str(case.get("Image_ID", ""))
 
-    full = best_match(sem_files, patch_id, image_id)
-    patch = best_match(patch_files, patch_id, image_id)
+    full = best_match(sem_files, patch_id, image_id, strict_triplet=False)
+    patch = best_match(patch_files, patch_id, image_id, strict_triplet=True)
+    if patch is None:
+        patch = best_match(patch_files, patch_id, image_id, strict_triplet=False)
 
-    manual = best_match(manual_files, patch_id, image_id, need_overlay=True)
-    seg = best_match(seg_files, patch_id, image_id, need_overlay=True)
-    mask = manual if manual else seg
+    seg = best_match(seg_files, patch_id, image_id, need_overlay=True, strict_triplet=True, only_true_mask=True)
+    manual = best_match(manual_files, patch_id, image_id, need_overlay=True, strict_triplet=True, only_true_mask=True)
+    mask = seg if seg else manual
 
-    return {"full": full, "patch": patch, "mask": mask}
+    return {"full": full, "patch": patch, "mask": mask, "mask_match_ok": bool(mask), "mask_is_true_overlay_or_mask": bool(mask and is_true_mask_overlay(mask))}
 
 
 def load_predictions_or_regenerate() -> pd.DataFrame:
@@ -217,10 +235,17 @@ def patch_row_col(case: Dict) -> Tuple[Optional[int], Optional[int]]:
     return None, None
 
 
-def draw_or_text(ax, image_path: Optional[Path], missing_text: str):
+def read_gray(image_path: Path) -> np.ndarray:
+    return np.array(Image.open(image_path).convert("L"))
+
+
+def draw_or_text(ax, image_path: Optional[Path], missing_text: str, force_gray: bool = False):
     ax.axis("off")
     if image_path and Path(image_path).exists():
-        ax.imshow(np.array(Image.open(image_path)))
+        if force_gray:
+            ax.imshow(read_gray(Path(image_path)), cmap="gray")
+        else:
+            ax.imshow(np.array(Image.open(image_path)))
     else:
         ax.text(0.5, 0.5, missing_text, ha="center", va="center", fontsize=9)
 
@@ -249,7 +274,17 @@ def main():
     for _, r in cases.iterrows():
         c = r.to_dict()
         m = find_case_images(c, sem_files, patch_files, manual_files, seg_files)
-        c.update({"full_sem_path": str(m["full"]) if m["full"] else "", "patch_path": str(m["patch"]) if m["patch"] else "", "mask_overlay_path": str(m["mask"]) if m["mask"] else ""})
+        tok = parse_patch_tokens(f"{c.get('Patch_ID','')} {c.get('Image_ID','')}")
+        c.update({
+            "case_zone": tok.get("zone", ""),
+            "case_img_no": tok.get("img_no", ""),
+            "case_patch_no": tok.get("patch_no", ""),
+            "full_sem_path": str(m["full"]) if m["full"] else "",
+            "patch_path": str(m["patch"]) if m["patch"] else "",
+            "mask_overlay_path": str(m["mask"]) if m["mask"] else "",
+            "mask_match_ok": bool(m["mask_match_ok"]),
+            "mask_is_true_overlay_or_mask": bool(m["mask_is_true_overlay_or_mask"]),
+        })
         matches.append(c)
         diagnosis.append(f"Case: {c.get('Case_label')} | Patch_ID={c.get('Patch_ID')} | Image_ID={c.get('Image_ID')} | Patch_row={c.get('Patch_row')} | Patch_col={c.get('Patch_col')}")
         diagnosis.append(f"  full SEM: {c['full_sem_path'] or 'NOT FOUND'}")
@@ -260,12 +295,17 @@ def main():
         if not c['mask_overlay_path']: diagnosis.append("  reason: mask/overlay match failed")
 
     matched_df = pd.DataFrame(matches)
-    matched_df["source_of_mask"] = np.where(matched_df["mask_overlay_path"].str.contains("06A_manual_annotations", na=False), "manual", "segmentation")
-    matched_df.to_excel(out_dir / "Figure12_selected_misclassified_cases.xlsx", index=False)
+    matched_df["mask_source"] = np.where(matched_df["mask_overlay_path"].str.contains("06A_manual_annotations", na=False), "manual", np.where(matched_df["mask_overlay_path"].str.contains("06B_semantic_segmentation", na=False), "segmentation", "none"))
+    keep_cols = ["Patch_ID", "Image_ID", "case_zone", "case_img_no", "case_patch_no", "full_sem_path", "patch_path", "mask_overlay_path", "mask_source", "mask_match_ok", "mask_is_true_overlay_or_mask", "Case_label", "True_label", "Predicted_label", "Patch_row", "Patch_col"]
+    for c in keep_cols:
+        if c not in matched_df.columns:
+            matched_df[c] = ""
+    matched_df[keep_cols].to_excel(out_dir / "Figure12_selected_misclassified_cases.xlsx", index=False)
 
     mpl.rcParams["font.family"] = "sans-serif"
     mpl.rcParams["font.sans-serif"] = ["Arial", "DejaVu Sans"]
     fig, axes = plt.subplots(4, 3, figsize=(12, 14), facecolor="white")
+    fig.subplots_adjust(top=0.92, hspace=0.35, wspace=0.15)
     for j, t in enumerate(["Full SEM with patch location", "SEM patch", "Semantic mask / overlay"]):
         axes[0, j].set_title(t, fontsize=10)
 
@@ -274,15 +314,15 @@ def main():
             axes[i, j].axis("off")
         if i < len(matched_df):
             c = matched_df.iloc[i].to_dict()
-            axes[i, 0].text(0.01, 1.02, c.get("Case_label", ""), transform=axes[i, 0].transAxes, fontsize=9, va="bottom")
+            axes[i, 0].text(0.01, 0.98, c.get("Case_label", ""), transform=axes[i, 0].transAxes, fontsize=9, va="top")
             axes[i, 0].text(0.01, -0.06, f"Patch_ID={c.get('Patch_ID','')} | True={c.get('True_label','')} | Pred={c.get('Predicted_label','')}", transform=axes[i, 0].transAxes, fontsize=7, va="top")
             full = Path(c["full_sem_path"]) if c.get("full_sem_path") else None
             patch = Path(c["patch_path"]) if c.get("patch_path") else None
             mask = Path(c["mask_overlay_path"]) if c.get("mask_overlay_path") else None
 
             if full and full.exists():
-                img = np.array(Image.open(full))
-                axes[i, 0].imshow(img, cmap="gray" if img.ndim == 2 else None)
+                img = read_gray(full)
+                axes[i, 0].imshow(img, cmap="gray")
                 pr, pc = patch_row_col(c)
                 if pr is not None and pc is not None:
                     h, w = img.shape[0], img.shape[1]
@@ -293,8 +333,12 @@ def main():
             else:
                 draw_or_text(axes[i, 0], None, "Full SEM not found")
 
-            draw_or_text(axes[i, 1], patch, "Patch image not found")
-            draw_or_text(axes[i, 2], mask, "Mask/overlay not found")
+            draw_or_text(axes[i, 1], patch, "Patch image not found", force_gray=True)
+            if c.get("mask_is_true_overlay_or_mask", False):
+                draw_or_text(axes[i, 2], mask, "Mask/overlay not found")
+            else:
+                draw_or_text(axes[i, 2], None, "Mask/overlay not found")
+                summary.append(f"{c.get('Case_label')}: No strict semantic mask/overlay was found for this case.")
 
     fig.tight_layout()
     for ext in ["png", "tif", "pdf"]:
@@ -309,6 +353,9 @@ def main():
         ok = bool(c.get("full_sem_path")) and bool(c.get("patch_path"))
         (success if ok else fail).append(c.get("Case_label", ""))
         summary.append(f"Selected case {c.get('Case_label')}: full={c.get('full_sem_path','')} | patch={c.get('patch_path','')} | mask={c.get('mask_overlay_path','')}")
+        summary.append(f"  patch shown as grayscale SEM: True")
+        summary.append(f"  mask_match_ok={c.get('mask_match_ok', False)} | mask_is_true_overlay_or_mask={c.get('mask_is_true_overlay_or_mask', False)}")
+    summary.append("Excluded images_for_annotation/raw/original/source from strict mask/overlay usage.")
 
     summary.append(f"Matched cases: {success}")
     summary.append(f"Missing cases: {fail}")
@@ -320,6 +367,8 @@ def main():
         print("  full SEM:", c.get("full_sem_path", ""))
         print("  patch:", c.get("patch_path", ""))
         print("  mask/overlay:", c.get("mask_overlay_path", ""))
+        print("  mask_match_ok:", c.get("mask_match_ok", ""))
+        print("  mask_is_true_overlay_or_mask:", c.get("mask_is_true_overlay_or_mask", ""))
     print("Matched cases:", success)
     print("Missing cases:", fail)
 
