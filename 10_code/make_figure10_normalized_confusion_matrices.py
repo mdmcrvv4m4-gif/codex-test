@@ -100,9 +100,16 @@ def main():
     tif_path = OUTPUT_DIR / "Figure_10_normalized_confusion_matrices.tif"
     pdf_path = OUTPUT_DIR / "Figure_10_normalized_confusion_matrices.pdf"
 
+    png_path_alt = OUTPUT_DIR / "Figure_10_confusion_matrices.png"
+    tif_path_alt = OUTPUT_DIR / "Figure_10_confusion_matrices.tif"
+    pdf_path_alt = OUTPUT_DIR / "Figure_10_confusion_matrices.pdf"
+
     fig.savefig(png_path, dpi=600, bbox_inches="tight")
     fig.savefig(tif_path, dpi=600, bbox_inches="tight")
     fig.savefig(pdf_path, dpi=600, bbox_inches="tight")
+    fig.savefig(png_path_alt, dpi=600, bbox_inches="tight")
+    fig.savefig(tif_path_alt, dpi=600, bbox_inches="tight")
+    fig.savefig(pdf_path_alt, dpi=600, bbox_inches="tight")
     plt.close(fig)
 
     xlsx_path = OUTPUT_DIR / "Figure10_normalized_confusion_matrices.xlsx"
@@ -116,7 +123,7 @@ def main():
         "Figure 10 confusion matrix summary",
         "=" * 40,
         "Data source: known confusion-matrix counts from previous model outputs",
-        "This version displays raw confusion-matrix counts only (no percentage matrix).",
+        "This version displays raw confusion-matrix counts rather than row-normalized percentages.",
         "",
     ]
 
@@ -137,6 +144,9 @@ def main():
     print(str(png_path))
     print(str(tif_path))
     print(str(pdf_path))
+    print(str(png_path_alt))
+    print(str(tif_path_alt))
+    print(str(pdf_path_alt))
     print(str(xlsx_path))
     print(str(txt_path))
 
