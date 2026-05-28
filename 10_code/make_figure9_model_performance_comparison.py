@@ -150,6 +150,7 @@ def plot_figure(perf: pd.DataFrame, out_dir: Path):
         ax.set_xticklabels(TASK_TICK_LABELS, fontsize=9)
         ax.set_ylim(0, 1.05)
         ax.set_ylabel("Score")
+        ax.set_ylim(0, 1.05)
         ax.grid(axis="y", linestyle="--", alpha=0.3)
 
     handles = [plt.Rectangle((0, 0), 1, 1, color=c, ec="black", lw=0.5) for c in colors]
