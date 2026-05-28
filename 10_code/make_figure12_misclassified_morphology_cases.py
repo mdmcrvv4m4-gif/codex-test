@@ -313,8 +313,8 @@ def main():
 
     mpl.rcParams["font.family"] = "sans-serif"
     mpl.rcParams["font.sans-serif"] = ["Arial", "DejaVu Sans"]
-    fig, axes = plt.subplots(4, 2, figsize=(9, 14), facecolor="white")
-    fig.subplots_adjust(top=0.955, hspace=0.60, wspace=0.12)
+    fig, axes = plt.subplots(4, 2, figsize=(10, 15), facecolor="white")
+    fig.subplots_adjust(left=0.10, right=0.98, top=0.94, bottom=0.04, hspace=0.42, wspace=0.15)
     for j, t in enumerate(["Full SEM with patch location", "SEM patch"]):
         axes[0, j].set_title(t, fontsize=11, pad=16)
 
@@ -323,7 +323,6 @@ def main():
             axes[i, j].axis("off")
         if i < len(matched_df):
             c = matched_df.iloc[i].to_dict()
-            axes[i, 0].text(0.01, 1.06, c.get("Case_label", ""), transform=axes[i, 0].transAxes, fontsize=9, va="bottom", clip_on=False)
             axes[i, 0].text(0.01, -0.08, f"Patch_ID={c.get('Patch_ID','')} | True={c.get('True_label','')} | Pred={c.get('Predicted_label','')}", transform=axes[i, 0].transAxes, fontsize=7, va="top", clip_on=False)
             full = Path(c["full_sem_path"]) if c.get("full_sem_path") else None
             patch = Path(c["patch_path"]) if c.get("patch_path") else None
@@ -338,16 +337,23 @@ def main():
                     pw, ph = w / 4.0, h / 4.0
                     x0 = pc * pw
                     y0 = pr * ph
-                    eps = 1.5
+                    eps = 2.5
                     x0 = min(max(x0, eps), max(0.0, w - pw - eps))
                     y0 = min(max(y0, eps), max(0.0, h - ph - eps))
-                    axes[i, 0].add_patch(Rectangle((x0, y0), pw, ph, fill=False, edgecolor="red", linewidth=1.2))
+                    axes[i, 0].add_patch(Rectangle((x0, y0), pw, ph, fill=False, edgecolor="red", linewidth=1.6))
                 else:
                     summary.append(f"{c.get('Case_label')}: cannot compute accurate red-box location (missing patch row/col).")
             else:
                 draw_or_text(axes[i, 0], None, "Full SEM not found")
 
             draw_or_text(axes[i, 1], patch, "Patch image not found", force_gray=True)
+
+    # Place row case labels outside the image axes on the left margin.
+    for i in range(4):
+        if i < len(matched_df):
+            c = matched_df.iloc[i].to_dict()
+            pos = axes[i, 0].get_position()
+            fig.text(0.02, pos.y1 + 0.005, c.get("Case_label", ""), ha="left", va="bottom", fontsize=9)
 
     fig.tight_layout()
     for ext in ["png", "tif", "pdf"]:
