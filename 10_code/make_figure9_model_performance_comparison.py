@@ -55,23 +55,31 @@ def map_model(v: str):
     return None
 
 
-def write_diagnosis(xlsx: Path, out_txt: Path):
+def write_diagnosis(xlsx: Path, out_txt: Path, debug_xlsx: Path):
     xls = pd.ExcelFile(xlsx)
+    sheet_dfs = {}
+    lines = [f"Workbook path: {xlsx}", "Sheet names:"]
+    for s in xls.sheet_names:
+        lines.append(f"- {s}")
+
+    for s in xls.sheet_names:
+        df = pd.read_excel(xlsx, sheet_name=s)
+        sheet_dfs[s] = df
+        lines.append("")
+        lines.append(f"=== Sheet: {s} ===")
+        lines.append(f"shape: {df.shape}")
+        lines.append(f"columns: {list(df.columns)}")
+        lines.append("first 30 rows:")
+        lines.append(df.head(30).to_string(index=False))
+
     with open(out_txt, "w", encoding="utf-8") as f:
-        f.write(f"Workbook path: {xlsx}\n")
-        f.write("Sheet names:\n")
-        for s in xls.sheet_names:
-            f.write(f"- {s}\n")
-        f.write("\n")
-        for s in xls.sheet_names:
-            df = pd.read_excel(xlsx, sheet_name=s)
-            f.write(f"=== Sheet: {s} ===\n")
-            f.write(f"shape: {df.shape}\n")
-            f.write(f"columns: {list(df.columns)}\n")
-            f.write("first 20 rows:\n")
-            f.write(df.head(20).to_string(index=False))
-            f.write("\n\n")
-            df.head(30).to_excel(writer, sheet_name=s[:31], index=False)
+        f.write("\n".join(lines))
+
+    with pd.ExcelWriter(debug_xlsx, engine="openpyxl") as writer:
+        for s, df in sheet_dfs.items():
+            safe_name = str(s)[:31]
+            df.head(30).to_excel(writer, sheet_name=safe_name, index=False)
+
     return xls
 
 
@@ -189,11 +197,12 @@ def main():
     diagnosis_txt = out_dir / "Figure9_S13_workbook_diagnosis.txt"
     summary_xlsx = out_dir / "Figure9_model_performance_summary.xlsx"
     summary_txt = out_dir / "Figure9_model_performance_summary.txt"
+    debug_xlsx = out_dir / "Figure9_parse_failed_debug.xlsx"
 
     if not s13_path.exists():
         raise FileNotFoundError(f"Input workbook not found: {s13_path}")
 
-    xls = write_diagnosis(s13_path, diagnosis_txt)
+    xls = write_diagnosis(s13_path, diagnosis_txt, debug_xlsx)
     df = pd.read_excel(s13_path, sheet_name=xls.sheet_names[0])
     perf = compute_metrics_from_expanded_table(df)
     perf.to_excel(summary_xlsx, index=False)
@@ -202,6 +211,7 @@ def main():
     write_summary_txt(summary_txt, s13_path, perf)
 
     print(str(diagnosis_txt))
+    print(str(debug_xlsx))
     print(str(summary_xlsx))
     print(str(summary_txt))
     for p in figure_paths:
