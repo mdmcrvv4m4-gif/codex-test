@@ -84,14 +84,16 @@ def main():
     mpl.rcParams["font.family"] = "sans-serif"
     mpl.rcParams["font.sans-serif"] = ["Arial", "DejaVu Sans"]
 
-    fig, axes = plt.subplots(1, 3, figsize=(16, 5), constrained_layout=True)
+    fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+    fig.subplots_adjust(left=0.05, right=0.90, bottom=0.16, top=0.88, wspace=0.36)
 
     last_im = None
     for ax, task in zip(axes, TASKS):
         last_im = draw_task_confusion(ax, task["counts"], task["labels"], f"{task['panel']} {task['name']}")
 
-    cbar = fig.colorbar(last_im, ax=axes, shrink=0.9, pad=0.02)
-    cbar.set_label("Count")
+    cbar_ax = fig.add_axes([0.92, 0.20, 0.015, 0.62])
+    cbar = fig.colorbar(last_im, cax=cbar_ax)
+    cbar.set_label("Count", fontsize=10)
 
     png_path = OUTPUT_DIR / "Figure_10_normalized_confusion_matrices.png"
     tif_path = OUTPUT_DIR / "Figure_10_normalized_confusion_matrices.tif"
