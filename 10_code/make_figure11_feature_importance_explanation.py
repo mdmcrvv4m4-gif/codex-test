@@ -36,7 +36,11 @@ def _find_col(columns, candidates):
 def clean_feature_name(name: str) -> str:
     mapping = {
         "stddev": "Standard deviation",
-        "dsi_semantic": "Semantic DSI",
+        "texture_roughness": "Texture roughness",
+        "crack_length_density": "Crack length density",
+        "crack_network_density": "Crack network density",
+        "wear_mark_density": "Wear mark density",
+        "severe_damage_area_fraction": "Severe damage area fraction",
     }
     x = str(name).strip()
     key = x.lower()
@@ -110,7 +114,8 @@ def main():
     exclude_keywords = [
         "patch_id", "image_id", "zone", "region", "label", "class", "target", "severity", "failure", "mode",
         "y_true", "y_pred", "prediction", "predicted", "file", "path", "mask", "overlay", "status", "split",
-        "fold", "rank", "count"
+        "fold", "rank", "count", "row", "col", "patch_row", "patch_col", "dsi", "score", "norm",
+        "normalized", "primary", "enhanced", "weight"
     ]
 
     y = s10[y_col]
@@ -167,7 +172,14 @@ def main():
         "perm_importance_std": perm.importances_std,
     }).sort_values("perm_importance_mean", ascending=False)
 
-    top_perm = perm_df.head(10).copy()
+    perm_df_pos = perm_df[perm_df["perm_importance_mean"] > 0].copy()
+    if perm_df_pos.empty:
+        top_perm = perm_df.head(10).copy()
+        summary_lines.append(
+            "No positive permutation importance features were found; fallback used top 10 by raw mean."
+        )
+    else:
+        top_perm = perm_df_pos.head(10).copy()
     top_perm["feature_display"] = top_perm["feature"].map(clean_feature_name)
     top_perm.to_excel(OUT_DIR / "Figure11_permutation_importance_top_features.xlsx", index=False)
 
@@ -227,6 +239,12 @@ def main():
         shap_success = True
     except Exception:
         shap_msg = "SHAP was skipped because shap was not installed or failed in the current environment."
+
+    summary_lines.extend([
+        "Permutation importance filtering: excluded derived/location features containing "
+        "DSI, score, norm/normalized, rank, count, row/col, patch_row/patch_col, and related metadata.",
+        "Figure 11(b) is computed only from original grayscale, texture, and semantic morphology features.",
+    ])
 
     rf_feats = [str(x) for x in top_rf[feat_col].tolist()]
     perm_feats = [str(x) for x in top_perm["feature"].tolist()]
