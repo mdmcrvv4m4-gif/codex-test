@@ -14,6 +14,9 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
 
 OUTPUT_DIR = Path(r"E:\Barrel_SEM_Z1_Z4_New\07_figures_main")
 
