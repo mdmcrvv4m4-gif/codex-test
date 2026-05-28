@@ -154,15 +154,15 @@ def plot_figure(perf: pd.DataFrame, out_dir: Path):
         ax.grid(axis="y", linestyle="--", alpha=0.3)
 
     handles = [plt.Rectangle((0, 0), 1, 1, color=c, ec="black", lw=0.5) for c in colors]
-    fig.legend(handles, MODEL_ORDER, loc="upper center", bbox_to_anchor=(0.5, 1.04), ncol=3, frameon=False)
-    plt.tight_layout(rect=[0, 0, 1, 0.93])
+    fig.legend(handles, MODEL_ORDER, loc="upper center", bbox_to_anchor=(0.5, 1.02), ncol=3, frameon=False)
+    fig.tight_layout(rect=[0, 0, 1, 0.92])
 
     png = out_dir / "Figure_9_model_performance_comparison.png"
     tif = out_dir / "Figure_9_model_performance_comparison.tif"
     pdf = out_dir / "Figure_9_model_performance_comparison.pdf"
-    fig.savefig(png, dpi=600)
-    fig.savefig(tif, dpi=600)
-    fig.savefig(pdf, dpi=600)
+    fig.savefig(png, dpi=600, bbox_inches="tight")
+    fig.savefig(tif, dpi=600, bbox_inches="tight")
+    fig.savefig(pdf, dpi=600, bbox_inches="tight")
     plt.close(fig)
     return [png, tif, pdf]
 
