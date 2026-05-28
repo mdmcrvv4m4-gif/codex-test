@@ -113,7 +113,9 @@ def main():
         "normalized", "primary", "enhanced", "weight",
         "y1", "y2", "x1", "x2", "patch no", "patch_no", "patchno", "patch_number",
         "patch index", "patch_index", "sample_id", "sample no", "sample_no", "index", "id",
-        "coordinate", "coord", "position", "location"
+        "coordinate", "coord", "position", "location",
+        "image no", "image_no", "image number", "image_number", "imageno",
+        "imageid", "image_id", "image index", "image_index"
     ]
 
     y = s10[y_col]
@@ -182,7 +184,8 @@ def main():
     ylabels_a = [wrap_label(x) for x in rf_plot["feature_display"]]
     axes[0].barh(ylabels_a, rf_plot[imp_col], color="#4C78A8")
     axes[0].set_xlabel("RF feature importance")
-    axes[0].set_title("(a) RF impurity-based importance", loc="left")
+    title_a = "(a) RF impurity-based importance"
+    axes[0].set_title(title_a, loc="left")
 
     pm_plot = top_perm.iloc[::-1]
     ylabels_b = [wrap_label(x) for x in pm_plot["feature_display"]]
@@ -230,8 +233,7 @@ def main():
         shap_msg = "SHAP was skipped because shap was not installed or failed in the current environment."
 
     summary_lines.extend([
-        "Permutation importance excluded positional, identifier, DSI, score, normalized, rank, count, row/column, and sample-index variables.",
-        "The displayed permutation importance is based only on grayscale, texture, and semantic morphology features.",
+        "Permutation importance excluded image identifiers, positional variables, sample indices, DSI, score, normalized, rank, count, row/column, and other non-morphological variables. The displayed permutation importance is based only on grayscale, texture, and semantic morphology features.",
         "Error bars were omitted from the permutation importance plot for visual clarity.",
         "Numerical labels on bars were omitted; feature importance values are provided in the exported Excel tables.",
     ])
