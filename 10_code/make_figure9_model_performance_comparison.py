@@ -149,12 +149,12 @@ def plot_figure(perf: pd.DataFrame, out_dir: Path):
         ax.set_xticklabels(TASK_ORDER, fontsize=9)
         ax.set_ylim(0, 1.05)
         ax.set_ylabel("Score")
+        ax.set_ylim(0, 1.05)
         ax.grid(axis="y", linestyle="--", alpha=0.3)
 
     handles = [plt.Rectangle((0, 0), 1, 1, color=c, ec="black", lw=0.5) for c in colors]
     fig.legend(handles, MODEL_ORDER, loc="upper center", ncol=3, frameon=False, bbox_to_anchor=(0.5, 1.03))
     plt.tight_layout(rect=[0, 0, 1, 0.92])
-
     png = out_dir / "Figure_9_model_performance_comparison.png"
     tif = out_dir / "Figure_9_model_performance_comparison.tif"
     pdf = out_dir / "Figure_9_model_performance_comparison.pdf"
