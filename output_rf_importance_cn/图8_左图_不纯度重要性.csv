@@ -1,0 +1,11 @@
+﻿中文特征名称,英文原始名称,特征重要性数值,排序
+严重损伤面积分数,Severe damage area fraction,0.1425485611,1
+磨痕密度,Wear mark density,0.1370322704,2
+磨损面积分数,Wear area fraction,0.1159490123,3
+裂纹面积分数,Crack area fraction,0.083868891,4
+裂纹网络密度,Crack network density,0.0831369609,5
+裂纹长度密度,Crack length density,0.0785489827,6
+严重损伤最大连通域占比,Severe damage connected area,0.0765317082,7
+纹理熵,Entropy,0.0588760339,8
+灰度标准差,Standard deviation,0.0516281053,9
+纹理粗糙度,Texture roughness,0.0454870053,10

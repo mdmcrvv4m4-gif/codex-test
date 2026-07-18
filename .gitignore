@@ -1,0 +1,4 @@
+output_rf_importance_cn/*.png
+output_rf_importance_cn/*.tif
+output_rf_importance_cn/*.pdf
+output_rf_importance_cn/*.xlsx
