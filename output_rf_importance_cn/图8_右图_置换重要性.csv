@@ -1,0 +1,10 @@
+﻿中文特征名称,英文原始名称,特征重要性数值,排序
+磨损面积分数,Wear area fraction,0.08,1
+磨痕密度,Wear mark density,0.0354,2
+严重损伤面积分数,Severe damage area fraction,0.0349,3
+相关性,Correlation,0.0151,4
+裂纹面积分数,Crack area fraction,0.0126,5
+峰度,Kurtosis,0.0074,6
+灰度均值,Mean,0.0043,7
+灰度标准差,Standard deviation,0.0029,8
+磨损方向一致性,Wear orientation consistency,0.0003,9

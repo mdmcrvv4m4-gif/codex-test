@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="710" height="380" viewBox="0 0 710 380">
+<rect width="100%" height="100%" fill="white"/>
+<text x="172.5" y="28" text-anchor="middle" font-family="SimSun,Noto Sans CJK SC" font-size="14" font-weight="bold">（a）随机森林不纯度重要性</text>
+<path d="M 118 56 V 313 H 327" fill="none" stroke="#222" stroke-width="0.8"/>
+<text x="110" y="69.0" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">严重损伤面积分数</text>
+<rect x="118" y="64.0" width="198.62" height="16" fill="#4C78A8" stroke="#444" stroke-width="0.4"/>
+<text x="303.00" y="76.0" font-family="Times New Roman" font-size="10">0.143</text>
+<text x="110" y="94.7" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">磨痕密度</text>
+<rect x="118" y="89.7" width="190.93" height="16" fill="#4C78A8" stroke="#444" stroke-width="0.4"/>
+<text x="303.00" y="101.7" font-family="Times New Roman" font-size="10">0.137</text>
+<text x="110" y="120.4" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">磨损面积分数</text>
+<rect x="118" y="115.4" width="161.56" height="16" fill="#4C78A8" stroke="#444" stroke-width="0.4"/>
+<text x="283.56" y="127.4" font-family="Times New Roman" font-size="10">0.116</text>
+<text x="110" y="146.1" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">裂纹面积分数</text>
+<rect x="118" y="141.1" width="116.86" height="16" fill="#4C78A8" stroke="#444" stroke-width="0.4"/>
+<text x="238.86" y="153.1" font-family="Times New Roman" font-size="10">0.084</text>
+<text x="110" y="171.8" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">裂纹网络密度</text>
+<rect x="118" y="166.8" width="115.84" height="16" fill="#4C78A8" stroke="#444" stroke-width="0.4"/>
+<text x="237.84" y="178.8" font-family="Times New Roman" font-size="10">0.083</text>
+<text x="110" y="197.5" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">裂纹长度密度</text>
+<rect x="118" y="192.5" width="109.44" height="16" fill="#4C78A8" stroke="#444" stroke-width="0.4"/>
+<text x="231.44" y="204.5" font-family="Times New Roman" font-size="10">0.079</text>
+<text x="110" y="223.2" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">严重损伤最大</text>
+<text x="110" y="233.2" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">连通域占比</text>
+<rect x="118" y="218.2" width="106.63" height="16" fill="#4C78A8" stroke="#444" stroke-width="0.4"/>
+<text x="228.63" y="230.2" font-family="Times New Roman" font-size="10">0.077</text>
+<text x="110" y="248.9" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">纹理熵</text>
+<rect x="118" y="243.9" width="82.03" height="16" fill="#4C78A8" stroke="#444" stroke-width="0.4"/>
+<text x="204.03" y="255.9" font-family="Times New Roman" font-size="10">0.059</text>
+<text x="110" y="274.6" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">灰度标准差</text>
+<rect x="118" y="269.6" width="71.94" height="16" fill="#4C78A8" stroke="#444" stroke-width="0.4"/>
+<text x="193.94" y="281.6" font-family="Times New Roman" font-size="10">0.052</text>
+<text x="110" y="300.29999999999995" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">纹理粗糙度</text>
+<rect x="118" y="295.29999999999995" width="63.38" height="16" fill="#4C78A8" stroke="#444" stroke-width="0.4"/>
+<text x="185.38" y="307.29999999999995" font-family="Times New Roman" font-size="10">0.045</text>
+<path d="M 118.00 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="118.00" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.00</text>
+<path d="M 145.87 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="145.87" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.02</text>
+<path d="M 173.73 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="173.73" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.04</text>
+<path d="M 201.60 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="201.60" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.06</text>
+<path d="M 229.47 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="229.47" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.08</text>
+<path d="M 257.33 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="257.33" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.10</text>
+<path d="M 285.20 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="285.20" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.12</text>
+<path d="M 313.07 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="313.07" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.14</text>
+<path d="M 340.93 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="340.93" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.16</text>
+<text x="222.5" y="350" text-anchor="middle" font-family="SimSun,Noto Sans CJK SC" font-size="12">随机森林特征重要性</text>
+<text x="532.5" y="28" text-anchor="middle" font-family="SimSun,Noto Sans CJK SC" font-size="14" font-weight="bold">（b）置换重要性</text>
+<path d="M 483 56 V 313 H 682" fill="none" stroke="#222" stroke-width="0.8"/>
+<text x="475" y="69.0" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">磨损面积分数</text>
+<rect x="483" y="64.0" width="187.29" height="16" fill="#F58518" stroke="#444" stroke-width="0.4"/>
+<text x="658.00" y="76.0" font-family="Times New Roman" font-size="10">0.080</text>
+<text x="475" y="97.55555555555556" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">磨痕密度</text>
+<rect x="483" y="92.55555555555556" width="82.88" height="16" fill="#F58518" stroke="#444" stroke-width="0.4"/>
+<text x="569.88" y="104.55555555555556" font-family="Times New Roman" font-size="10">0.035</text>
+<text x="475" y="126.11111111111111" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">严重损伤面积分数</text>
+<rect x="483" y="121.11111111111111" width="81.71" height="16" fill="#F58518" stroke="#444" stroke-width="0.4"/>
+<text x="568.71" y="133.11111111111111" font-family="Times New Roman" font-size="10">0.035</text>
+<text x="475" y="154.66666666666669" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">相关性</text>
+<rect x="483" y="149.66666666666669" width="35.35" height="16" fill="#F58518" stroke="#444" stroke-width="0.4"/>
+<text x="522.35" y="161.66666666666669" font-family="Times New Roman" font-size="10">0.015</text>
+<text x="475" y="183.22222222222223" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">裂纹面积分数</text>
+<rect x="483" y="178.22222222222223" width="29.50" height="16" fill="#F58518" stroke="#444" stroke-width="0.4"/>
+<text x="516.50" y="190.22222222222223" font-family="Times New Roman" font-size="10">0.013</text>
+<text x="475" y="211.77777777777777" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">峰度</text>
+<rect x="483" y="206.77777777777777" width="17.32" height="16" fill="#F58518" stroke="#444" stroke-width="0.4"/>
+<text x="504.32" y="218.77777777777777" font-family="Times New Roman" font-size="10">0.0074</text>
+<text x="475" y="240.33333333333334" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">灰度均值</text>
+<rect x="483" y="235.33333333333334" width="10.07" height="16" fill="#F58518" stroke="#444" stroke-width="0.4"/>
+<text x="497.07" y="247.33333333333334" font-family="Times New Roman" font-size="10">0.0043</text>
+<text x="475" y="268.8888888888889" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">灰度标准差</text>
+<rect x="483" y="263.8888888888889" width="6.79" height="16" fill="#F58518" stroke="#444" stroke-width="0.4"/>
+<text x="493.79" y="275.8888888888889" font-family="Times New Roman" font-size="10">0.0029</text>
+<text x="475" y="297.44444444444446" text-anchor="end" font-family="SimSun,Noto Sans CJK SC" font-size="11">磨损方向一致性</text>
+<rect x="483" y="292.44444444444446" width="0.70" height="16" fill="#F58518" stroke="#444" stroke-width="0.4"/>
+<text x="487.70" y="304.44444444444446" font-family="Times New Roman" font-size="10">0.0003</text>
+<path d="M 483.00 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="483.00" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.00</text>
+<path d="M 506.41 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="506.41" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.01</text>
+<path d="M 529.82 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="529.82" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.02</text>
+<path d="M 553.24 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="553.24" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.03</text>
+<path d="M 576.65 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="576.65" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.04</text>
+<path d="M 600.06 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="600.06" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.05</text>
+<path d="M 623.47 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="623.47" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.06</text>
+<path d="M 646.88 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="646.88" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.07</text>
+<path d="M 670.29 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="670.29" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.08</text>
+<path d="M 693.71 313 v 4" stroke="#222" stroke-width="0.8"/>
+<text x="693.71" y="331" text-anchor="middle" font-family="Times New Roman" font-size="10">0.09</text>
+<text x="582.5" y="350" text-anchor="middle" font-family="SimSun,Noto Sans CJK SC" font-size="12">置换后 Macro-F1 下降量</text>
+</svg>
