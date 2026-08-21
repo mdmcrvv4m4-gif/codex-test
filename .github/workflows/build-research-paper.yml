@@ -1,0 +1,24 @@
+name: Build research paper Word
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install python-docx matplotlib
+      - name: Generate Word document
+        run: python tools/generate_research_paper.py
+      - name: Upload Word document
+        uses: actions/upload-artifact@v4
+        with:
+          name: research-paper-word
+          path: artifacts/95式电磁激光仿真训练模型关键模块结构与工作原理分析_小论文版.docx
+          if-no-files-found: error
