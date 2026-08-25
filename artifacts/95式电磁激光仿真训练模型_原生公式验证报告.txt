@@ -1,0 +1,4 @@
+Native Word equation objects (OMML): 126
+Diagram media files: 6
+Chinese diagram font: /usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc
+Equation images detected: NO
