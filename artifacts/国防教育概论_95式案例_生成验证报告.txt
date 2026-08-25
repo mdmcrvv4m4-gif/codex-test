@@ -1,0 +1,5 @@
+Output: 国防教育概论_95式外形仿真训练模型机电光系统原理_书稿版.docx
+Native Word equation objects (OMML): 133
+Embedded images: 12
+Chinese diagram font: /usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc
+Document paragraphs: 143
