@@ -23,24 +23,24 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y pandoc fonts-noto-cjk
           pip install python-docx matplotlib
-      - name: Generate native-equation Word document
-        run: python tools/generate_native_equation_paper.py
+      - name: Generate book-ready Word chapter
+        run: python tools/generate_defense_education_book_chapter.py
       - name: Upload Word document
         uses: actions/upload-artifact@v4
         with:
-          name: native-equation-word
+          name: defense-education-book-chapter
           path: |
-            artifacts/95式电磁激光仿真训练模型结构与原理说明_无乱码_原生公式版.docx
-            artifacts/95式电磁激光仿真训练模型_原生公式验证报告.txt
+            artifacts/国防教育概论_95式外形仿真训练模型机电光系统原理_书稿版.docx
+            artifacts/国防教育概论_95式案例_生成验证报告.txt
           if-no-files-found: error
       - name: Commit generated Word document
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add 'artifacts/95式电磁激光仿真训练模型结构与原理说明_无乱码_原生公式版.docx' 'artifacts/95式电磁激光仿真训练模型_原生公式验证报告.txt'
+          git add 'artifacts/国防教育概论_95式外形仿真训练模型机电光系统原理_书稿版.docx' 'artifacts/国防教育概论_95式案例_生成验证报告.txt'
           if git diff --cached --quiet; then
             echo 'No changes to commit'
           else
-            git commit -m 'Publish native equation Word document'
+            git commit -m 'Publish defense education book chapter'
             git push
           fi
