@@ -20,7 +20,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install python-docx matplotlib
       - name: Generate document
-        run: python tools/generate_95_author_voice_seq.py
+        run: python tools/generate_95_author_voice_seq_fixed.py
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
