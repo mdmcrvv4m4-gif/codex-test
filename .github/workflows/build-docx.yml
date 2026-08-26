@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main]
 permissions:
-  contents: read
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,3 +26,14 @@ jobs:
         with:
           name: 95-author-voice-docx
           path: artifacts/*
+      - name: Publish DOCX to generated-output branch
+        run: |
+          DOCX=$(find artifacts -maxdepth 1 -name '*.docx' | head -n 1)
+          cp "$DOCX" /tmp/generated.docx
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git checkout -B generated-output
+          cp /tmp/generated.docx '95式电磁激光仿真训练模型结构与原理说明_研究生作者版_顺序编码.docx'
+          git add '95式电磁激光仿真训练模型结构与原理说明_研究生作者版_顺序编码.docx'
+          git commit -m 'Update generated author-voice DOCX' || true
+          git push origin generated-output --force
