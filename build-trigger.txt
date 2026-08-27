@@ -1,0 +1,1 @@
+Trigger DOCX build for research-student author-voice version with sequential references.
