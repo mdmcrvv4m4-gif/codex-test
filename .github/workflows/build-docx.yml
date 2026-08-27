@@ -16,26 +16,28 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y fonts-noto-cjk
+          sudo apt-get install -y fonts-noto-cjk pandoc
           python -m pip install --upgrade pip
-          pip install python-docx matplotlib
-      - name: Generate base document
-        run: python tools/generate_95_author_voice_seq_fixed.py
-      - name: Add research-student photo descriptions
-        run: python tools/postprocess_95_photo_descriptions.py
+          pip install python-docx matplotlib requests beautifulsoup4 pillow
+      - name: Generate formula-rich base document
+        run: python tools/generate_corrected_formula_paper.py
+      - name: Add photo-linked principles and patent diagrams
+        run: python tools/enhance_photo_formula_v3.py
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: 95-author-voice-photo-enhanced-docx
-          path: artifacts/*
-      - name: Publish enhanced DOCX to generated-output branch
+          name: 95-photo-formula-principle-enhanced-docx
+          path: |
+            artifacts/95式电磁激光仿真训练模型结构与原理说明_实物图_公式原理强化版.docx
+            artifacts/photo_formula_v3_assets/*
+      - name: Publish DOCX to generated-output branch
         run: |
-          DOCX='artifacts/95式电磁激光仿真训练模型结构与原理说明_研究生作者版_实物图说明增强版.docx'
+          DOCX='artifacts/95式电磁激光仿真训练模型结构与原理说明_实物图_公式原理强化版.docx'
           cp "$DOCX" /tmp/generated.docx
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git checkout -B generated-output
-          cp /tmp/generated.docx '95式电磁激光仿真训练模型结构与原理说明_研究生作者版_实物图说明增强版.docx'
-          git add '95式电磁激光仿真训练模型结构与原理说明_研究生作者版_实物图说明增强版.docx'
-          git commit -m 'Update enhanced research-student DOCX' || true
+          cp /tmp/generated.docx '95式电磁激光仿真训练模型结构与原理说明_实物图_公式原理强化版.docx'
+          git add '95式电磁激光仿真训练模型结构与原理说明_实物图_公式原理强化版.docx'
+          git commit -m 'Update photo formula principle enhanced DOCX' || true
           git push origin generated-output --force
